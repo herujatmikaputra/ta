@@ -15,6 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('pull', function(){
+    $cmd = 'cd ../ && git pull origin master';
+    $output = shell_exec($cmd);
+    return $output;
+});
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -72,8 +78,3 @@ Route::prefix('mobile')->group(function (){
     Route::get('save/{member_id}/{tgl_booking}/{id_jadwal}','MobileController@save');
 });
 
-Route::post('pull', function(){
-    $cmd = 'cd ../ && git pull origin master';
-    $output = shell_exec($cmd);
-    return $output;
-});
