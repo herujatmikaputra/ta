@@ -75,6 +75,5 @@ Route::prefix('mobile')->group(function (){
 Route::post('pull', function(){
     $cmd = 'cd ../ && git pull origin master';
     $output = shell_exec($cmd);
-
     return $output;
 });
