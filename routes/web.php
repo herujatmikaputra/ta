@@ -1,13 +1,19 @@
 <?php
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::post('pull', function(){
     $cmd = 'cd ../ && git pull origin master';
     $output = shell_exec($cmd);
     return $output;
+});
+
+Route::get('pull', function(){
+    $cmd = 'cd ../ && git pull origin master';
+    $output = shell_exec($cmd);
+    return $output;
+});
+
+Route::get('/', function () {
+    return view('welcome');
 });
 
 Auth::routes();
