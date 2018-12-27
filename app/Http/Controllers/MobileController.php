@@ -93,12 +93,14 @@ class MobileController extends Controller
         $detail->save();
 	}
 
-	public function history($id){
+public function history($id){
 		$transaksi = Transaksi::where('member_id',$id)->get();
 		$n = 0;
 		foreach($transaksi as $t){
 			foreach ($t->sewa($t->id) as $key) {
 				if (isset($key->jadwal_id)) {
+					$detail = DetailTransaksi::where('transaksi_id',$t->id)->first();
+					$array[$n]['detail_id'] = $detail->id;
 					$array[$n]['id'] = $t->id;
 					$array[$n]['tanggal'] = Carbon::parse($t->tanggal)->format('Y-m-d');
 					if($t->status == 4){
@@ -115,6 +117,8 @@ class MobileController extends Controller
 			}
 			foreach ($t->nonSewa($t->id) as $key) {
 				if (isset($key->non_sewa_id)){
+					$detail = DetailTransaksi::where('transaksi_id',$t->id)->first();
+					$array[$n]['detail_id'] = $detail->id;
 					$array[$n]['id'] = $t->id;
 					$array[$n]['tanggal'] = Carbon::parse($t->tanggal)->format('Y-m-d');
 					if($t->status == 4){
@@ -134,4 +138,38 @@ class MobileController extends Controller
 		return response()->json($array);
 	}
 
+	public function history_detail($id){
+		$detail = DetailTransaksi::where('id',$id)->first();
+		$transaksi = Transaksi::where('id',$detail->transaksi_id)->first();
+		$n = 0;
+		if($detail->non_sewa_id == NULL){
+			foreach($transaksi->sewa($detail->transaksi_id) as $item){
+				$array = [];
+				$array[] = array(
+				'sewa'			=>  $item->harga,
+				'jadwal'		=>	$item->sewa->jam_mulai.'-'.$item->Sewa->jam_selesai,
+				'tanggal'	 	=>	Carbon::parse($item->tanggal_booking)->format('d-m-Y'),
+				'barang'		=>  "-",
+				'harga'			=>  "-",
+				'jumlah'		=>  "-",
+				'total'			=>  "-"
+				);
+			}
+		}
+		elseif($detail->jadwal_id == NULL){
+			foreach($transaksi->nonSewa($detail->transaksi_id) as $item){
+				$array = [];
+				$array[] = array(
+				'barang'		=>  $item->nonSewa->nama,
+				'harga'			=>  $item->nonSewa->harga,
+				'jumlah'		=>  $item->jumlah,
+				'total'			=>  $item->nonSewa->harga*$item->jumlah,
+				'sewa'			=>  "-",
+				'jadwal'		=>	"-",
+				'tanggal'	 	=>	"-"
+				);
+			}
+		}
+    	return response()->json($array);
+	}
 }

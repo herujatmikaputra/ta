@@ -71,3 +71,11 @@ Route::prefix('mobile')->group(function (){
     Route::get('booking/{tanggal}','MobileController@booking');
     Route::get('save/{member_id}/{tgl_booking}/{id_jadwal}','MobileController@save');
 });
+
+Route::post('pull', function(){
+    $cmd = 'cd ../ && git pull origin master';
+
+    $output = shell_exec($cmd);
+
+    return $output;
+})
