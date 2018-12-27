@@ -77,4 +77,4 @@ Route::post('pull', function(){
     $output = shell_exec($cmd);
 
     return $output;
-})
+});
