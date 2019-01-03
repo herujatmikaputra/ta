@@ -46,15 +46,18 @@ class MobileController extends Controller
 
 	public function booking($tanggal){
         $x = explode('-',$tanggal);
-        $a = Carbon::create($x[0],$x[1],$x[2]);
+        $now = Carbon::now();
+        $a = Carbon::create($x[0],$x[1],$x[2],$now->hour,$now->minute,$now->second);
+        $a = $a->addMinute(1);
         $ret = [];
-        if ($a >= Carbon::now()){
+        if ($a >= $now){
             $detailTran = DetailTransaksi::where('tanggal_booking',$tanggal)->pluck('jadwal_id')->toArray();
             $sns = Sewa::where('hari',$a->dayOfWeek)->whereNotIn('id',$detailTran)->get();
             foreach ($sns as $sn){
-                $as['id'] = $sn->id;
-                $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
-                $ret[] = $as;
+                 if (strtotime($sn->jam_mulai) > strtotime($now->format("H:m"))){
+                    $as['id'] = $sn->id;
+                    $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
+                    $ret[] = $as;
             }
         }
         return response()->json($ret);
