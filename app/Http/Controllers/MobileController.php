@@ -58,6 +58,7 @@ class MobileController extends Controller
                     $as['id'] = $sn->id;
                     $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
                     $ret[] = $as;
+                 }     
             }
         }
         return response()->json($ret);
