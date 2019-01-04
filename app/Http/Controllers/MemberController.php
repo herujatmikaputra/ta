@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JadwalMember;
+
 use App\Models\Member;
 use App\Models\RiwayatSaldo;
 use App\Models\Sewa;
@@ -123,13 +123,7 @@ class MemberController extends Controller
     {
         $member = Member::find($id);
         $user = User::where('role',3)->pluck('name','id');
-        $jadDetail = JadwalMember::pluck('jadwal_id')->toArray();
-        $jadwals = Sewa::whereNotIn('id',$jadDetail)->get();
-        $jadwal = [];
-        foreach ($jadwals as $value){
-            $jadwal[$value->id] = config('variable.hari')[$value->hari].' ('.$value->jam_mulai.'-'.$value->jam_selesai.')';
-        }
-        return view('members.edit',compact('member','user','jadwal'));
+    return view('members.edit',compact('member','user'));    
     }
 
     /**
