@@ -181,10 +181,10 @@ class TransaksiController extends Controller
                     $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
                     $ret[] = $as;
             }else{
-                    if (strtotime($sn->jam_mulai) > strtotime($now->format("H:m"))){
-                        $as['id'] = $sn->id;
-                        $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
-                        $ret[] = $as;
+                if (strtotime($sn->jam_mulai) > strtotime($now->format("H:m"))){
+                   $as['id'] = $sn->id;
+                   $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
+                   $ret[] = $as;
               }
            }
         }
