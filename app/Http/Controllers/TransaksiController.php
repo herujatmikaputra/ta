@@ -176,11 +176,17 @@ class TransaksiController extends Controller
             $detailTran = DetailTransaksi::where('tanggal_booking',$tanggal)->pluck('jadwal_id')->toArray();
             $sns = Sewa::where('hari',$a->dayOfWeek)->whereNotIn('id',$detailTran)->get();
             foreach ($sns as $sn){
-                if (strtotime($sn->jam_mulai) > strtotime($now->format("H:m"))){
+               if (strtotime($now->toDateTimeString()) < strtotime($a->toDateString())){
                     $as['id'] = $sn->id;
                     $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
                     $ret[] = $as;
-            }
+            }else{
+                    if (strtotime($sn->jam_mulai) > strtotime($now->format("H:m"))){
+                        $as['id'] = $sn->id;
+                        $as['jam'] = $sn->jam_mulai.'-'.$sn->jam_selesai;
+                        $ret[] = $as;
+                }
+           }
         }
      }      
         return response()->json($ret);
